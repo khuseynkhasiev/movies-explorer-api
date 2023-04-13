@@ -5,11 +5,21 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "lint": "npx eslint ."
   },
   "author": "khuseynkhasiev",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
     "nodemon": "^2.0.22"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "mongoose": "^6.10.4"
   }
 }

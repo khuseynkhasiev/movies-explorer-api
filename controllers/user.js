@@ -5,7 +5,7 @@ const UnaccurateDateError = require('../errors/unaccurateDateError');
 const ConflictError = require('../errors/conflictError');
 
 const getUser = async (req, res, next) => {
-  const userId = '6437daead9efe824561ca5be';
+  const userId = '6437daead9efe824561ca5be'; // временное решение
 
   try {
     const user = await User.findById(userId);
@@ -26,7 +26,7 @@ const getUser = async (req, res, next) => {
 };
 
 const patchUser = async (req, res, next) => {
-  const userId = '6437daead9efe824561ca5be';
+  const userId = '6437daead9efe824561ca5be'; // временное решение
   const { email, name } = req.body;
 
   try {
@@ -56,7 +56,7 @@ const createUser = async (req, res, next) => {
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      email, password: hash, name
+      email, password: hash, name,
     }))
     .then((data) => {
       res.status(201).send(data);

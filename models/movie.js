@@ -3,23 +3,23 @@ const mongoose = require('mongoose');
 const movie = new mongoose.Schema({
   country: {
     require: true,
-    type: String
+    type: String,
   },
   director: {
     require: true,
-    type: String
+    type: String,
   },
   duration: {
     require: true,
-    type: Number
+    type: Number,
   },
   year: {
     require: true,
-    type: String
+    type: String,
   },
   description: {
     require: true,
-    type: String
+    type: String,
   },
   image: {
     require: true,
@@ -62,12 +62,12 @@ const movie = new mongoose.Schema({
   },
   nameRU: {
     require: true,
-    type: String
+    type: String,
   },
   nameEN: {
     require: true,
-    type: String
+    type: String,
   },
-})
+});
 
-module.exports = mongoose.model('movie', movie)
+module.exports = mongoose.model('movie', movie);

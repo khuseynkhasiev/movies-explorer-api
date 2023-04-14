@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const { getUser } = require('../controllers/user');
+const { getMovies, postMovie, deleteMovie } = require('../controllers/movie');
 
-router.get('/', getUser);
-router.patch('/', getUser);
-router.delete('/:_id', getUser);
+router.get('/', getMovies);
+router.post('/', postMovie);
+router.delete('/:_id', deleteMovie);
 
 module.exports = router;

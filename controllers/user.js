@@ -1,12 +1,41 @@
 const bcrypt = require('bcryptjs');
+const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/notFoundError');
 const UnaccurateDateError = require('../errors/unaccurateDateError');
 const ConflictError = require('../errors/conflictError');
+const SECRET_KEY_DEV = require('../constans');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((data) => {
+      const token = jsonWebToken.sign({ _id: data._id }, NODE_ENV === 'production' ? JWT_SECRET : SECRET_KEY_DEV, {
+        expiresIn: '7d',
+      });
+      const {
+        name,
+      } = data;
+      res
+        .status(200)
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+          sameSite: false,
+        })
+        .send({
+          email,
+          name,
+        });
+    })
+    .catch((e) => {
+      next(e);
+    });
+};
 const getUser = async (req, res, next) => {
-  const userId = '6437daead9efe824561ca5be'; // временное решение
-
+  const userId = req.user._id;
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -26,9 +55,8 @@ const getUser = async (req, res, next) => {
 };
 
 const patchUser = async (req, res, next) => {
-  const userId = '6437daead9efe824561ca5be'; // временное решение
+  const userId = req.user._id;
   const { email, name } = req.body;
-
   try {
     const user = await User.findByIdAndUpdate(
       userId,
@@ -42,6 +70,11 @@ const patchUser = async (req, res, next) => {
     }
     res.status(200).send(user);
   } catch (e) {
+    if (e.code === 11000) {
+      const err = new ConflictError('Пользователь с такой почтой уже существует');
+      next(err);
+      return;
+    }
     if (e.name === 'ValidationError' || e.name === 'CastError') {
       const err = new UnaccurateDateError('Переданы некорректные данные при обновлении профиля');
       next(err);
@@ -53,7 +86,6 @@ const patchUser = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   const { email, password, name } = req.body;
-
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       email, password: hash, name,
@@ -63,7 +95,7 @@ const createUser = async (req, res, next) => {
     })
     .catch((e) => {
       if (e.code === 11000) {
-        const err = new ConflictError('Пользователь с такими данными уже существует');
+        const err = new ConflictError('Пользователь с такой почтой уже существует');
         next(err);
         return;
       }
@@ -76,4 +108,9 @@ const createUser = async (req, res, next) => {
     });
 };
 
-module.exports = { getUser, createUser, patchUser };
+module.exports = {
+  createUser,
+  getUser,
+  login,
+  patchUser,
+};

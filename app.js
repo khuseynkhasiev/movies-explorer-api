@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const routes = require('./routes/index');
 const { errorHandler } = require('./middlewares/errorHandler');
@@ -17,7 +18,7 @@ app.use(cookieParser());
 app.use(requestLogger); // подключаем логгер запросов
 app.use(routes);
 app.use(errorLogger); // подключаем логгер ошибок
-
+app.use(errors()); // обработчик ошибок celebrate
 app.use(errorHandler); // централизованный обработчик ошибок
 app.listen(PORT, () => {
   console.log(`Порт - ${PORT}, сервер запущен`);

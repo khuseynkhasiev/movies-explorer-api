@@ -10,13 +10,14 @@ const { errorHandler } = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const limiter = require('./middlewares/limiter');
 const { options } = require('./middlewares/handleOptions');
+const { MONGO_DB } = require('./constans');
 
-const { PORT = 3001, mongoDb = 'mongodb://127.0.0.1:27017/moviesdb' } = process.env;
+const { PORT = 3001, MONGO_DB_PRODUCTION, NODE_ENV } = process.env;
 
 const app = express();
 app.use('*', cors(options));
 app.use(limiter);
-mongoose.connect(mongoDb, {
+mongoose.connect(NODE_ENV === 'production' ? MONGO_DB_PRODUCTION : MONGO_DB, {
   useNewUrlParser: true,
 });
 app.use(helmet());

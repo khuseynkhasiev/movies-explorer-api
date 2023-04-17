@@ -2,17 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 const routes = require('./routes/index');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const limiter = require('./middlewares/limiter');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001, mongoDb = 'mongodb://127.0.0.1:27017/moviesdb' } = process.env;
 
 const app = express();
-mongoose.connect('mongodb://127.0.0.1:27017/moviesdb', {
+app.use(limiter);
+mongoose.connect(mongoDb, {
   useNewUrlParser: true,
 });
-
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(requestLogger); // подключаем логгер запросов

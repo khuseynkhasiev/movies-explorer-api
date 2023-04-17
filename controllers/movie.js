@@ -55,15 +55,15 @@ const postMovie = async (req, res, next) => {
 
 const deleteMovie = async (req, res, next) => {
   const userId = req.user._id;
-  const movieId = req.params._id;
+  const { _id } = req.params;
   try {
-    const movie = await Movie.findById(movieId);
+    const movie = await Movie.findById(_id);
+    const owner = movie.owner.toString();
     if (!movie) {
       const err = new NotFoundError('Фильм с указанным _id не найден');
       next(err);
       return;
-    }
-    if (!userId === movie.owner) {
+    } if (!(userId === owner)) {
       const err = new ForbiddenError('Вы не можете удалить карточку другого пользователя');
       next(err);
       return;

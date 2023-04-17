@@ -91,7 +91,8 @@ const createUser = async (req, res, next) => {
       email, password: hash, name,
     }))
     .then((data) => {
-      res.status(201).send(data);
+      const { _id } = data;
+      res.status(201).send({ email, name, _id });
     })
     .catch((e) => {
       if (e.code === 11000) {

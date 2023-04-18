@@ -1,6 +1,11 @@
-# movies-explorer-api
-
 # Проект Movies-explorer бэкенд
+
+# Ссылки на проект
+IP-адрес 51.250.7.34
+PORT: 3001
+
+## Для локального запуска проекта
+http://localhost:3001
 
 ## Ссылка на репозиторий проекта
 [movies-explorer-api](https://github.com/khuseynkhasiev/movies-explorer-api)

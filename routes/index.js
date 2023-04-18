@@ -6,7 +6,7 @@ const { createUser, login } = require('../controllers/user');
 const { auth } = require('../middlewares/auth');
 const NotFoundError = require('../errors/notFoundError');
 
-router.use('/user', auth, userRouter);
+router.use('/users', auth, userRouter);
 router.use('/movies', auth, moviesRouter);
 router.post('/signup', celebrate({
   body: Joi.object().keys({

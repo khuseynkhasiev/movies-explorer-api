@@ -5,6 +5,11 @@ const NotFoundError = require('../errors/notFoundError');
 const UnaccurateDateError = require('../errors/unaccurateDateError');
 const ConflictError = require('../errors/conflictError');
 const { SECRET_KEY_DEV } = require('../constans');
+const {
+  NotFoundErrorMessage,
+  UnaccurateDateErrorMessage,
+  ConflictErrorMessage,
+} = require('../constans');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -34,19 +39,31 @@ const login = (req, res, next) => {
       next(e);
     });
 };
+
+const deleteCookie = (req, res, next) => {
+  try {
+    res
+      .status(200)
+      .cookie('jwt', '', {
+        maxAge: 0,
+      }).send({ message: 'токен удален' });
+  } catch (e) {
+    next(e);
+  }
+};
 const getUser = async (req, res, next) => {
   const userId = req.user._id;
   try {
     const user = await User.findById(userId);
     if (!user) {
-      const err = new NotFoundError('Пользователь по указанному _id не найден');
+      const err = new NotFoundError(NotFoundErrorMessage);
       next(err);
       return;
     }
     res.status(200).send(user);
   } catch (e) {
     if (e.name === 'CastError') {
-      const err = new UnaccurateDateError('Переданы некорректные данные');
+      const err = new UnaccurateDateError(UnaccurateDateErrorMessage);
       next(err);
       return;
     }
@@ -64,19 +81,19 @@ const patchUser = async (req, res, next) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      const err = new NotFoundError('Пользователь по указанному _id не найден');
+      const err = new NotFoundError(NotFoundErrorMessage);
       next(err);
       return;
     }
     res.status(200).send(user);
   } catch (e) {
     if (e.code === 11000) {
-      const err = new ConflictError('Пользователь с такой почтой уже существует');
+      const err = new ConflictError(ConflictErrorMessage);
       next(err);
       return;
     }
     if (e.name === 'ValidationError' || e.name === 'CastError') {
-      const err = new UnaccurateDateError('Переданы некорректные данные при обновлении профиля');
+      const err = new UnaccurateDateError(UnaccurateDateErrorMessage);
       next(err);
       return;
     }
@@ -96,12 +113,12 @@ const createUser = async (req, res, next) => {
     })
     .catch((e) => {
       if (e.code === 11000) {
-        const err = new ConflictError('Пользователь с такой почтой уже существует');
+        const err = new ConflictError(ConflictErrorMessage);
         next(err);
         return;
       }
       if (e.name === 'ValidationError') {
-        const err = new UnaccurateDateError('Переданы некорректные данные при создании пользователя');
+        const err = new UnaccurateDateError(UnaccurateDateErrorMessage);
         next(err);
         return;
       }
@@ -114,4 +131,5 @@ module.exports = {
   getUser,
   login,
   patchUser,
+  deleteCookie,
 };

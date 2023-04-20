@@ -13,6 +13,8 @@ const ForbiddenErrorMessage = 'Вы не можете удалить карто�
 const UnauthorizedErrorMessage = 'Неправильная почта или пароль';
 const UnauthorizedErrorInMessage = 'Необходима авторизация';
 const InternalServerErrorMessage = 'На сервере произошла ошибка';
+const IncorrectEmail = 'Некорректный email';
+const IncorrectUrl = 'Не корректный URL';
 
 module.exports = {
   SECRET_KEY_DEV,
@@ -30,4 +32,6 @@ module.exports = {
   UnauthorizedErrorMessage,
   UnauthorizedErrorInMessage,
   InternalServerErrorMessage,
+  IncorrectEmail,
+  IncorrectUrl,
 };

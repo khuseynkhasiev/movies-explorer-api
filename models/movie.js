@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { IncorrectUrl } = require('../constans');
 
 const movie = new mongoose.Schema({
   country: {
@@ -28,7 +29,7 @@ const movie = new mongoose.Schema({
       validator(v) {
         return /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g.test(v);
       },
-      message: 'Не корректный URL',
+      message: IncorrectUrl,
     },
   },
   trailerLink: {
@@ -38,7 +39,7 @@ const movie = new mongoose.Schema({
       validator(v) {
         return /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g.test(v);
       },
-      message: 'Не корректный URL',
+      message: IncorrectUrl,
     },
   },
   thumbnail: {
@@ -48,7 +49,7 @@ const movie = new mongoose.Schema({
       validator(v) {
         return /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g.test(v);
       },
-      message: 'Не корректный URL',
+      message: IncorrectUrl,
     },
   },
   owner: {

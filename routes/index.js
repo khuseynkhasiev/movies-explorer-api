@@ -10,7 +10,7 @@ router.use('/users', auth, userRouter);
 router.use('/movies', auth, moviesRouter);
 router.post('/signup', validateCreateUser(), createUser);
 router.post('/signin', validateLogin(), login);
-router.post('/signout', deleteCookie);
+router.post('/signout', auth, deleteCookie);
 router.use('*', auth, (req, res, next) => {
   const err = new NotFoundError('Not Found');
   next(err);

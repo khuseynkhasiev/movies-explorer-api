@@ -1,11 +1,7 @@
 const Movie = require('../models/movie');
 const UnaccurateDateError = require('../errors/unaccurateDateError');
-const NotFoundError = require('../errors/notFoundError');
-const ForbiddenError = require('../errors/forbiddenError');
 const {
-  NotFoundErrorMessage,
   UnaccurateDateErrorMessage,
-  ForbiddenErrorMessage,
 } = require('../constans');
 
 const getMovies = async (req, res, next) => {
@@ -30,7 +26,7 @@ const postMovie = async (req, res, next) => {
     nameEN,
     thumbnail,
     trailerLink,
-    movieId,
+    id,
   } = req.body;
   try {
     const movie = await Movie.create({
@@ -40,11 +36,11 @@ const postMovie = async (req, res, next) => {
       year,
       description,
       image,
-      trailerLink,
       nameRU,
       nameEN,
       thumbnail,
-      movieId,
+      trailerLink,
+      id,
       owner: userId,
     });
     res.status(201).send(movie);
@@ -58,21 +54,9 @@ const postMovie = async (req, res, next) => {
   }
 };
 const deleteMovie = async (req, res, next) => {
-  const userId = req.user._id;
-  const { _id } = req.params;
+  const { movieId } = req.body;
   try {
-    const movie = await Movie.findById(_id);
-    const owner = movie.owner.toString();
-    if (!movie) {
-      const err = new NotFoundError(NotFoundErrorMessage);
-      next(err);
-      return;
-    } if (!(userId === owner)) {
-      const err = new ForbiddenError(ForbiddenErrorMessage);
-      next(err);
-      return;
-    }
-    await Movie.deleteOne(movie);
+    await Movie.deleteOne({ id: movieId });
     res.status(200).send({ message: 'Фильм удален' });
   } catch (e) {
     if (e.name === 'CastError') {

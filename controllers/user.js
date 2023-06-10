@@ -16,13 +16,14 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
-    .then((data) => {
-      const token = jsonWebToken.sign({ _id: data._id }, NODE_ENV === 'production' ? JWT_SECRET : SECRET_KEY_DEV, {
+    .then((user) => {
+      const token = jsonWebToken.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : SECRET_KEY_DEV, {
         expiresIn: '7d',
       });
       const {
+        _id,
         name,
-      } = data;
+      } = user;
       res
         .status(200)
         .cookie('jwt', token, {
@@ -31,8 +32,9 @@ const login = (req, res, next) => {
           sameSite: false,
         })
         .send({
-          email,
+          _id,
           name,
+          email,
         });
     })
     .catch((e) => {
@@ -40,6 +42,7 @@ const login = (req, res, next) => {
     });
 };
 
+// функция которая вызывается при запросе по роуту signout
 const deleteCookie = (req, res, next) => {
   try {
     res

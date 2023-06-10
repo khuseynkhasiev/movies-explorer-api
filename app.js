@@ -12,7 +12,7 @@ const limiter = require('./middlewares/limiter');
 const { options } = require('./middlewares/handleOptions');
 const { MONGO_DB } = require('./constans');
 
-const { PORT = 3001, MONGO_DB_PRODUCTION, NODE_ENV } = process.env;
+const { PORT = 3000, MONGO_DB_PRODUCTION, NODE_ENV } = process.env;
 
 const app = express();
 app.use('*', cors(options));

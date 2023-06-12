@@ -54,10 +54,15 @@ const postMovie = async (req, res, next) => {
   }
 };
 const deleteMovie = async (req, res, next) => {
+  const userId = req.user._id;
   const { movieId } = req.body;
   try {
-    await Movie.deleteOne({ id: movieId });
-    res.status(200).send({ message: 'Фильм удален' });
+    const movies = await Movie.find({ owner: userId });
+    const movie = movies.find((i) => i.id === movieId);
+    if (movie.id === movieId) {
+      await Movie.deleteOne({ _id: movie._id });
+      res.status(200).send({ message: 'Фильм удален' });
+    }
   } catch (e) {
     if (e.name === 'CastError') {
       const error = new UnaccurateDateError(UnaccurateDateErrorMessage);
